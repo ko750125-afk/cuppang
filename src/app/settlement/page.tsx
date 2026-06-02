@@ -132,7 +132,10 @@ export default function Settlement() {
 
         {/* 일별 상세 내역 (달력 형태) */}
         <div className="space-y-3">
-          <h3 className="font-bold text-[16px] text-[#191F28] px-1">일별 상세 내역</h3>
+          <h3 className="font-bold text-[16px] text-[#191F28] px-1">
+            월별 배송 내역
+            <span className="text-[13px] font-semibold text-[#4E5968] ml-2">{format(targetDate, 'yyyy년 M월', { locale: ko })}</span>
+          </h3>
           <Card className="rounded-xl overflow-hidden shadow-xs border border-[#E5E8EB] bg-white p-4">
             {/* 요일 헤더 */}
             <div className="grid grid-cols-7 gap-1 text-center font-bold text-[11px] text-[#4E5968] pb-2 border-b border-[#E5E8EB]">
