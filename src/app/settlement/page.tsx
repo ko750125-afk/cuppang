@@ -15,8 +15,19 @@ export default function Settlement() {
   const { settings, getAllRecords } = useAppStore();
 
   useEffect(() => {
-    setTargetDate(new Date());
-  }, []);
+    const today = new Date();
+    const payDay = settings.payDay || 15;
+    
+    // 오늘 날짜가 급여일(15일) 이전이면, 아직 이번 달 급여를 수령하지 못한 상태이므로
+    // 이번 달 15일에 받게 될 이전 달 정산(지난달 26일 ~ 이번달 25일 배송분)을 기본값으로 세팅합니다.
+    if (today.getDate() <= payDay) {
+      const prevMonth = new Date(today);
+      prevMonth.setMonth(prevMonth.getMonth() - 1);
+      setTargetDate(prevMonth);
+    } else {
+      setTargetDate(today);
+    }
+  }, [settings.payDay]);
 
   if (!targetDate) return <div className="p-4 text-center mt-10">로딩중...</div>;
 
@@ -111,7 +122,7 @@ export default function Settlement() {
         {/* 요약 카드 */}
         <Card className="bg-white border border-[#E5E8EB] shadow-xs rounded-xl p-5">
           <div className="text-[11px] font-bold text-[#4E5968] tracking-wider uppercase mb-1 flex items-center justify-between">
-            <span>최종 실수령액 예상</span>
+            <span>{targetDate.getMonth() + 1}월 정산액</span>
             <span className="bg-[#E6F9F2] text-[#00D082] font-bold px-2 py-0.5 rounded-full text-[10px] tracking-normal uppercase">Settled</span>
           </div>
           <div className="text-[32px] font-extrabold text-[#191F28] tracking-tight mb-4">
@@ -165,7 +176,8 @@ export default function Settlement() {
                       "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all",
                       !cell.isCurrentMonth && "opacity-25 pointer-events-none bg-[#f8f9fa]",
                       cell.isCurrentMonth && !cell.isWithinPeriod && "bg-[#f8f9fa] opacity-40",
-                      cell.isCurrentMonth && cell.isWithinPeriod && (isSelected ? "bg-blue-50/30" : "hover:bg-[#f8f9fa] bg-white")
+                      cell.isCurrentMonth && cell.isWithinPeriod && (isSelected ? "bg-blue-50/40 hover:bg-blue-50/50" : "hover:bg-[#f8f9fa] bg-white"),
+                      cell.isCurrentMonth && isSelected && "ring-2 ring-[#1850d4] ring-inset z-2"
                     )}
                   >
                     {/* 날짜 표시 */}
@@ -174,7 +186,8 @@ export default function Settlement() {
                         "text-[9px] font-semibold leading-none",
                         isSunday && "text-[#F04452]",
                         isSaturday && "text-[#1850d4]",
-                        cell.isCurrentMonth && cell.isWithinPeriod ? "text-[#191F28]" : "text-[#4E5968]"
+                        cell.isCurrentMonth && cell.isWithinPeriod ? "text-[#191F28]" : "text-[#4E5968]",
+                        isSelected && "font-extrabold text-[#1850d4]"
                       )}
                     >
                       {cell.date.getDate()}

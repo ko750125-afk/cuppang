@@ -34,7 +34,7 @@ const defaultSettings: AppSettings = {
   ],
   workDaysPerWeek: 6,
   restDaysOfWeek: [0], // 0 = Sunday
-  settlementStartDay: 25,
+  settlementStartDay: 26,
   payDay: 15, // 15일로 변경
   commissionRate: 3.3, // 프리랜서 기본 3.3%
 };
