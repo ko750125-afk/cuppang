@@ -36,7 +36,7 @@ const defaultSettings: AppSettings = {
   restDaysOfWeek: [0], // 0 = Sunday
   settlementStartDay: 26,
   payDay: 15,
-  freshBagIncentiveRate: 0,
+  freshBagIncentive: 0,
   commissionRate: 3.3,
 };
 

@@ -23,7 +23,7 @@ export function calculateDailyRevenue(record: DailyRecord, settings: AppSettings
     }
   }
   
-  const freshBagIncentive = baseRevenue * ((settings.freshBagIncentiveRate || 0) / 100);
+  const freshBagIncentive = settings.freshBagIncentive || 0;
   const totalGrossRevenue = baseRevenue + freshBagIncentive;
   const commissionDeduction = totalGrossRevenue * (settings.commissionRate / 100);
   const finalNetRevenue = totalGrossRevenue - commissionDeduction;

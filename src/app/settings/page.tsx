@@ -186,16 +186,16 @@ export default function Settings() {
               <div className="relative">
                 <Input
                   type="number"
-                  step="0.1"
+                  step="1"
                   className="w-full border border-[#E5E8EB] rounded-lg h-10 px-3 pr-10 text-sm font-bold text-[#191F28] bg-white focus:border-[#1850d4]"
-                  value={settings.freshBagIncentiveRate ?? 0}
+                  value={settings.freshBagIncentive ?? 0}
                   onChange={(e) => {
                     const val = e.target.value;
-                    const num = val === '' ? 0 : parseFloat(val);
-                    if (!isNaN(num)) updateSettings({ freshBagIncentiveRate: num });
+                    const num = val === '' ? 0 : parseInt(val, 10);
+                    if (!isNaN(num)) updateSettings({ freshBagIncentive: num });
                   }}
                 />
-                <span className="text-sm font-bold text-[#4E5968] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">%</span>
+                <span className="text-sm font-bold text-[#4E5968] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">원</span>
               </div>
             </div>
 
