@@ -7,10 +7,21 @@ export function calculateDailyRevenue(record: DailyRecord, settings: AppSettings
   let baseRevenue = 0;
 
   // 구역별 배송 수량에 따른 기본 매출 계산
-  settings.zones.forEach((zone) => {
-    const count = record.deliveries[zone.id] || 0;
-    baseRevenue += count * zone.price;
-  });
+  const zoneMap = new Map(settings.zones.map(z => [z.id, z.price]));
+  for (const [zoneId, count] of Object.entries(record.deliveries)) {
+    const price = zoneMap.get(zoneId);
+    if (price !== undefined) {
+      baseRevenue += count * price;
+    }
+  }
+
+  // Fallback: zone ID가 바뀐 경우(구역 재생성 등) 구역이 하나뿐이면 해당 단가로 전체 배송 건수 계산
+  if (baseRevenue === 0 && settings.zones.length === 1) {
+    const totalCount = Object.values(record.deliveries).reduce((a, b) => a + b, 0);
+    if (totalCount > 0) {
+      baseRevenue = totalCount * settings.zones[0].price;
+    }
+  }
   
   // 프레쉬백 수입은 예상 실수령액 및 정산 계산에서 완전히 제외
   const totalGrossRevenue = baseRevenue;

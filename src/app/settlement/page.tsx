@@ -35,6 +35,7 @@ export default function Settlement() {
   const records = getAllRecords();
   const settlement = calculateMonthlySettlement(targetDate, records, settings);
 
+
   const changeMonth = (offset: number) => {
     // day를 1로 고정해 settlementStartDay보다 항상 작게 유지 → 네비게이션 月 = 정산 종료 月 일치
     const d = new Date(targetDate!.getFullYear(), targetDate!.getMonth() + offset, 1);
