@@ -5,10 +5,11 @@ import { useAppStore } from '@/hooks/useAppStore';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Wallet, Bell, Calendar as CalendarIcon, Route as RouteIcon, Trash2, Plus, ChevronDown, LogOut, Cloud, ShieldCheck } from 'lucide-react';
+import { Bell, Calendar as CalendarIcon, Route as RouteIcon, Trash2, Plus, ChevronDown, LogOut, Cloud, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { auth, googleProvider } from '@/lib/firebase';
 import { signInWithPopup, signOut } from 'firebase/auth';
+import { AppHeader } from '@/components/layout/AppHeader';
 
 const GoogleIcon = () => (
   <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24">
@@ -80,16 +81,13 @@ export default function Settings() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] fade-in pb-10">
-      {/* 핀테크 헤더 바 */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E8EB] bg-white sticky top-0 z-10">
-        <div className="flex items-center gap-2">
-          <Wallet className="w-5 h-5 text-[#041627]" />
-          <span className="font-bold text-[17px] tracking-tight text-[#191F28]">Settlement Pro</span>
-        </div>
-        <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 p-0 hover:bg-muted/50">
-          <Bell className="w-5 h-5 text-[#4E5968]" />
-        </Button>
-      </div>
+      <AppHeader
+        rightSlot={
+          <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 p-0 hover:bg-muted/50">
+            <Bell className="w-5 h-5 text-[#4E5968]" />
+          </Button>
+        }
+      />
 
       <div className="p-5 space-y-5">
         {/* 타이틀 */}

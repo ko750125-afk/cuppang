@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/hooks/useAppStore';
 import { calculateMonthlySettlement, calculatePaymentDate } from '@/lib/calculations';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Wallet, MoreVertical } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { MoreVertical } from 'lucide-react';
+import { cn, toDateString } from '@/lib/utils';
+import { AppHeader } from '@/components/layout/AppHeader';
 
 export default function Settlement() {
   const [targetDate, setTargetDate] = useState<Date | null>(null);
@@ -48,10 +49,7 @@ export default function Settlement() {
   const totalDays = new Date(year, month + 1, 0).getDate();
   const prevMonthTotalDays = new Date(year, month, 0).getDate();
 
-  const toDateStringForCal = (d: Date) => {
-    const tzOffset = d.getTimezoneOffset() * 60000;
-    return new Date(d.getTime() - tzOffset).toISOString().split('T')[0];
-  };
+  const toDateStringForCal = toDateString;
 
   const calendarCells: { date: Date; isCurrentMonth: boolean; isWithinPeriod: boolean }[] = [];
 
@@ -90,16 +88,13 @@ export default function Settlement() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] fade-in pb-10">
-      {/* 핀테크 헤더 바 */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E8EB] bg-white sticky top-0 z-10">
-        <div className="flex items-center gap-2">
-          <Wallet className="w-5 h-5 text-[#041627]" />
-          <span className="font-bold text-[17px] tracking-tight text-[#191F28]">Settlement Pro</span>
-        </div>
-        <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 p-0 hover:bg-muted/50">
-          <MoreVertical className="w-5 h-5 text-[#4E5968]" />
-        </Button>
-      </div>
+      <AppHeader
+        rightSlot={
+          <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 p-0 hover:bg-muted/50">
+            <MoreVertical className="w-5 h-5 text-[#4E5968]" />
+          </Button>
+        }
+      />
 
       <div className="p-5 space-y-5">
         {/* 정산 연월 타이틀 및 컨트롤러 */}

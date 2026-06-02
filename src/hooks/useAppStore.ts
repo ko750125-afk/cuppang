@@ -15,14 +15,14 @@ interface AppState {
   settings: AppSettings;
   records: Record<string, DailyRecord>; // Key: YYYY-MM-DD
   user: UserInfo | null;
-  
+
   // Actions
   setUser: (user: UserInfo | null) => void;
   syncFromFirestore: (uid: string) => Promise<void>;
   updateSettings: (newSettings: Partial<AppSettings>) => void;
   addOrUpdateZone: (zone: Zone) => void;
   removeZone: (zoneId: string) => void;
-  
+
   updateDailyRecord: (date: string, record: Partial<DailyRecord>) => void;
   getDailyRecord: (date: string) => DailyRecord;
   getAllRecords: () => DailyRecord[];
@@ -35,8 +35,22 @@ const defaultSettings: AppSettings = {
   workDaysPerWeek: 6,
   restDaysOfWeek: [0], // 0 = Sunday
   settlementStartDay: 26,
-  payDay: 15, // 15일로 변경
-  commissionRate: 3.3, // 프리랜서 기본 3.3%
+  payDay: 15,
+  commissionRate: 3.3,
+};
+
+/** Firestore에 settings 백업하는 공통 헬퍼 */
+const backupSettings = (uid: string, settings: AppSettings) => {
+  setDoc(doc(db, 'cuppang_settings', uid), { settings }).catch((err) =>
+    console.error('Failed to backup settings:', err)
+  );
+};
+
+/** Firestore에 records 백업하는 공통 헬퍼 */
+const backupRecords = (uid: string, records: Record<string, DailyRecord>) => {
+  setDoc(doc(db, 'cuppang_records', uid), { records }).catch((err) =>
+    console.error('Failed to backup records:', err)
+  );
 };
 
 export const useAppStore = create<AppState>()(
@@ -50,19 +64,18 @@ export const useAppStore = create<AppState>()(
 
       syncFromFirestore: async (uid) => {
         try {
-          // 1. settings 가져오기
-          const settingsDoc = await getDoc(doc(db, 'cuppang_settings', uid));
-          let syncedSettings = get().settings;
-          if (settingsDoc.exists()) {
-            syncedSettings = settingsDoc.data().settings as AppSettings;
-          }
+          const [settingsDoc, recordsDoc] = await Promise.all([
+            getDoc(doc(db, 'cuppang_settings', uid)),
+            getDoc(doc(db, 'cuppang_records', uid)),
+          ]);
 
-          // 2. records 가져오기
-          const recordsDoc = await getDoc(doc(db, 'cuppang_records', uid));
-          let syncedRecords = get().records;
-          if (recordsDoc.exists()) {
-            syncedRecords = recordsDoc.data().records as Record<string, DailyRecord>;
-          }
+          const syncedSettings = settingsDoc.exists()
+            ? (settingsDoc.data().settings as AppSettings)
+            : get().settings;
+
+          const syncedRecords = recordsDoc.exists()
+            ? (recordsDoc.data().records as Record<string, DailyRecord>)
+            : get().records;
 
           set({ settings: syncedSettings, records: syncedRecords });
         } catch (error) {
@@ -70,29 +83,21 @@ export const useAppStore = create<AppState>()(
         }
       },
 
-      updateSettings: (newSettings) => 
+      updateSettings: (newSettings) =>
         set((state) => {
           const updated = { ...state.settings, ...newSettings };
-          if (state.user) {
-            setDoc(doc(db, 'cuppang_settings', state.user.uid), { settings: updated }).catch(err => 
-              console.error('Failed to backup settings:', err)
-            );
-          }
+          if (state.user) backupSettings(state.user.uid, updated);
           return { settings: updated };
         }),
 
       addOrUpdateZone: (zone) =>
         set((state) => {
-          const exists = state.settings.zones.find(z => z.id === zone.id);
-          const newZones = exists 
-            ? state.settings.zones.map(z => z.id === zone.id ? zone : z)
+          const exists = state.settings.zones.find((z) => z.id === zone.id);
+          const newZones = exists
+            ? state.settings.zones.map((z) => (z.id === zone.id ? zone : z))
             : [...state.settings.zones, zone];
           const updatedSettings = { ...state.settings, zones: newZones };
-          if (state.user) {
-            setDoc(doc(db, 'cuppang_settings', state.user.uid), { settings: updatedSettings }).catch(err => 
-              console.error('Failed to backup settings:', err)
-            );
-          }
+          if (state.user) backupSettings(state.user.uid, updatedSettings);
           return { settings: updatedSettings };
         }),
 
@@ -100,13 +105,9 @@ export const useAppStore = create<AppState>()(
         set((state) => {
           const updatedSettings = {
             ...state.settings,
-            zones: state.settings.zones.filter(z => z.id !== zoneId)
+            zones: state.settings.zones.filter((z) => z.id !== zoneId),
           };
-          if (state.user) {
-            setDoc(doc(db, 'cuppang_settings', state.user.uid), { settings: updatedSettings }).catch(err => 
-              console.error('Failed to backup settings:', err)
-            );
-          }
+          if (state.user) backupSettings(state.user.uid, updatedSettings);
           return { settings: updatedSettings };
         }),
 
@@ -115,23 +116,19 @@ export const useAppStore = create<AppState>()(
           const existing = state.records[date] || { date, deliveries: {}, freshBagCount: 0 };
           const updatedRecords = {
             ...state.records,
-            [date]: { ...existing, ...recordUpdate }
+            [date]: { ...existing, ...recordUpdate },
           };
-          if (state.user) {
-            setDoc(doc(db, 'cuppang_records', state.user.uid), { records: updatedRecords }).catch(err => 
-              console.error('Failed to backup records:', err)
-            );
-          }
+          if (state.user) backupRecords(state.user.uid, updatedRecords);
           return { records: updatedRecords };
         }),
 
       getDailyRecord: (date) => {
         return get().records[date] || { date, deliveries: {}, freshBagCount: 0 };
       },
-      
+
       getAllRecords: () => {
-        return Object.values(get().records).sort((a, b) => b.date.localeCompare(a.date)); // 최신순 정렬
-      }
+        return Object.values(get().records).sort((a, b) => b.date.localeCompare(a.date));
+      },
     }),
     {
       name: 'delivery-app-storage',
