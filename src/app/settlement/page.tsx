@@ -17,18 +17,9 @@ export default function Settlement() {
 
   useEffect(() => {
     const today = new Date();
-    const payDay = settings.payDay || 15;
-
-    // 오늘 날짜가 급여일(15일) 이전이면, 아직 이번 달 급여를 수령하지 못한 상태이므로
-    // 이번 달 15일에 받게 될 이전 달 정산(지난달 26일 ~ 이번달 25일 배송분)을 기본값으로 세팅합니다.
-    // day를 1로 고정: settlementStartDay(26)보다 항상 작으므로 네비게이션 월 = 정산 종료 월이 일치함
-    if (today.getDate() <= payDay) {
-      const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-      setTargetDate(prevMonth);
-    } else {
-      setTargetDate(new Date(today.getFullYear(), today.getMonth(), 1));
-    }
-  }, [settings.payDay]);
+    // 항상 현재 진행 중인 정산(이번 달)을 기본으로 표시
+    setTargetDate(new Date(today.getFullYear(), today.getMonth(), 1));
+  }, []);
 
   if (!targetDate) return <div className="p-4 text-center mt-10">로딩중...</div>;
 
