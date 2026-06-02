@@ -96,9 +96,6 @@ export default function Settlement() {
             <span className="text-[11px] font-semibold text-[#4E5968] mt-0.5 block">
               {settlement.startDate.replace(/-/g, '.')} ~ {settlement.endDate.replace(/-/g, '.')}
             </span>
-            <span className="text-[11px] font-bold text-[#1850d4] mt-0.5 block">
-              (수령일: {format(calculatePaymentDate(settlement.endDate, settings.payDay), 'MM/dd')})
-            </span>
           </div>
           <div className="flex items-center gap-1.5 bg-white border border-[#E5E8EB] rounded-lg px-1.5 py-0.5 shadow-xs">
             <Button variant="ghost" onClick={() => changeMonth(-1)} className="h-6 w-6 p-0 rounded-md text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">&lt;</Button>
@@ -114,8 +111,11 @@ export default function Settlement() {
             <span>{parseInt(settlement.endDate.split('-')[1], 10)}월 정산액</span>
             <span className="bg-[#E6F9F2] text-[#00D082] font-bold px-2 py-0.5 rounded-full text-[10px] tracking-normal uppercase">Settled</span>
           </div>
-          <div className="text-[32px] font-extrabold text-[#191F28] tracking-tight mb-4">
+          <div className="text-[32px] font-extrabold text-[#191F28] tracking-tight mb-1">
             ₩{Math.floor(settlement.totalNetRevenue).toLocaleString()}
+          </div>
+          <div className="text-[11px] font-bold text-[#1850d4] mb-4">
+            수령일: {format(calculatePaymentDate(settlement.endDate, settings.payDay), 'yyyy년 MM월 dd일')}
           </div>
           
           <div className="pt-4 border-t border-[#E5E8EB] space-y-2 text-xs font-semibold text-[#4E5968]">
