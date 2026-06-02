@@ -17,7 +17,10 @@ export default function Home() {
   const { settings, updateDailyRecord, getDailyRecord } = useAppStore();
 
   useEffect(() => {
-    setCurrentDate(toDateString(new Date()));
+    // 새벽 근무자: 근무는 전날 시작 → 배송 기록은 근무 시작일(전날)로 저장
+    const workStartDate = new Date();
+    workStartDate.setDate(workStartDate.getDate() - 1);
+    setCurrentDate(toDateString(workStartDate));
   }, []);
 
   if (!currentDate) return <div className="p-4 text-center mt-10">로딩중...</div>;
@@ -57,7 +60,7 @@ export default function Home() {
       <div className="p-5 space-y-4">
         {/* 날짜 선택 카드 */}
         <Card className="bg-white border border-[#E5E8EB] shadow-xs rounded-xl p-5">
-          <div className="text-[11px] font-bold text-[#4E5968] text-center tracking-wider uppercase mb-1.5">TODAY</div>
+          <div className="text-[11px] font-bold text-[#4E5968] text-center tracking-wider uppercase mb-1.5">근무일</div>
           <div className="flex items-center justify-between">
             <Button variant="ghost" onClick={() => changeDate(-1)} className="rounded-full h-9 w-9 p-0 text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">
               &lt;
