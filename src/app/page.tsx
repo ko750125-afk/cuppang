@@ -50,9 +50,13 @@ export default function Home() {
       <AppHeader />
 
       <div className="p-5 space-y-4">
+        {/* 사업장 카드 */}
+        <Card className="bg-[#1850d4] border-0 shadow-sm rounded-xl p-5 flex items-center justify-center">
+          <span className="text-[22px] font-extrabold text-white tracking-tight">송파물류</span>
+        </Card>
+
         {/* 날짜 선택 카드 */}
-        <Card className="bg-white border border-[#E5E8EB] shadow-xs rounded-xl p-5">
-          <div className="text-[15px] font-extrabold text-[#191F28] text-center tracking-tight mb-2">송파물류</div>
+        <Card className="bg-white border border-[#E5E8EB] shadow-xs rounded-xl p-4">
           <div className="flex items-center justify-between">
             <Button variant="ghost" onClick={() => changeDate(-1)} className="rounded-full h-9 w-9 p-0 text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">
               &lt;

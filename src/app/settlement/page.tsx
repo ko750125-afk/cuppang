@@ -111,7 +111,7 @@ export default function Settlement() {
             <span>{parseInt(settlement.endDate.split('-')[1], 10)}월 정산액</span>
             <span className="bg-[#E6F9F2] text-[#00D082] font-bold px-2 py-0.5 rounded-full text-[10px] tracking-normal uppercase">Settled</span>
           </div>
-          <div className="text-[11px] font-semibold text-[#4E5968] mb-1">
+          <div className="text-[13px] font-extrabold text-[#1850d4] mb-1">
             수령일 {format(calculatePaymentDate(settlement.endDate, settings.payDay), 'M/d(EEE)', { locale: ko })}
           </div>
           <div className="text-[32px] font-extrabold text-[#191F28] tracking-tight mb-4">
