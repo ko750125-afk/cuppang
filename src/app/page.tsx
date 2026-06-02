@@ -77,7 +77,7 @@ export default function Home() {
           onSave={handleMissedSave}
         />
 
-{/* 배송 입력 카드 */}
+        {/* 배송 입력 카드 */}
         <div className="space-y-3 pt-2">
           {settings.zones.length > 0 && (
             <DeliveryInputCard
