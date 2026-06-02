@@ -5,7 +5,7 @@ import { useAppStore } from '@/hooks/useAppStore';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Bell, Calendar as CalendarIcon, Route as RouteIcon, Trash2, Plus, ChevronDown, LogOut, Cloud, ShieldCheck } from 'lucide-react';
+import { Calendar as CalendarIcon, Route as RouteIcon, Trash2, Plus, ChevronDown, LogOut, Cloud, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { auth, googleProvider } from '@/lib/firebase';
 import { signInWithPopup, signOut } from 'firebase/auth';
@@ -81,13 +81,7 @@ export default function Settings() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] fade-in pb-10">
-      <AppHeader
-        rightSlot={
-          <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 p-0 hover:bg-muted/50">
-            <Bell className="w-5 h-5 text-[#4E5968]" />
-          </Button>
-        }
-      />
+      <AppHeader />
 
       <div className="p-5 space-y-5">
         {/* 타이틀 */}

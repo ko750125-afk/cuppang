@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useAppStore } from '@/hooks/useAppStore';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bell } from 'lucide-react';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { toDateString } from '@/lib/utils';
@@ -48,13 +47,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] fade-in pb-10">
-      <AppHeader
-        rightSlot={
-          <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 p-0 hover:bg-muted/50">
-            <Bell className="w-5 h-5 text-[#4E5968]" />
-          </Button>
-        }
-      />
+      <AppHeader />
 
       <div className="p-5 space-y-4">
         {/* 날짜 선택 카드 */}

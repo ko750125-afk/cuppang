@@ -7,7 +7,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { MoreVertical } from 'lucide-react';
 import { cn, toDateString } from '@/lib/utils';
 import { AppHeader } from '@/components/layout/AppHeader';
 
@@ -84,13 +83,7 @@ export default function Settlement() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] fade-in pb-10">
-      <AppHeader
-        rightSlot={
-          <Button variant="ghost" size="icon" className="rounded-full w-9 h-9 p-0 hover:bg-muted/50">
-            <MoreVertical className="w-5 h-5 text-[#4E5968]" />
-          </Button>
-        }
-      />
+      <AppHeader />
 
       <div className="p-5 space-y-5">
         {/* 정산 연월 타이틀 및 컨트롤러 */}
