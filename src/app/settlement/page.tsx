@@ -44,7 +44,7 @@ export default function Settlement() {
   // 달력 셀 계산 로직
   const year = targetDate.getFullYear();
   const month = targetDate.getMonth();
-  
+
   const firstDayOfWeek = new Date(year, month, 1).getDay();
   const totalDays = new Date(year, month + 1, 0).getDate();
   const prevMonthTotalDays = new Date(year, month, 0).getDate();
@@ -53,13 +53,15 @@ export default function Settlement() {
 
   const calendarCells: { date: Date; isCurrentMonth: boolean; isWithinPeriod: boolean }[] = [];
 
-  // 이전 달 끝부분
+  // 이전 달 끝부분 — 정산 기간에 포함될 수 있으므로 isWithinPeriod 정확히 계산
   for (let i = firstDayOfWeek - 1; i >= 0; i--) {
     const d = new Date(year, month - 1, prevMonthTotalDays - i);
+    const dateStr = toDateStringForCal(d);
+    const isWithin = dateStr >= settlement.startDate && dateStr <= settlement.endDate;
     calendarCells.push({
       date: d,
       isCurrentMonth: false,
-      isWithinPeriod: false
+      isWithinPeriod: isWithin
     });
   }
 
@@ -75,14 +77,16 @@ export default function Settlement() {
     });
   }
 
-  // 다음 달 시작
+  // 다음 달 시작 — 정산 기간에 포함될 수 있으므로 isWithinPeriod 정확히 계산
   const remaining = 42 - calendarCells.length;
   for (let i = 1; i <= remaining; i++) {
     const d = new Date(year, month + 1, i);
+    const dateStr = toDateStringForCal(d);
+    const isWithin = dateStr >= settlement.startDate && dateStr <= settlement.endDate;
     calendarCells.push({
       date: d,
       isCurrentMonth: false,
-      isWithinPeriod: false
+      isWithinPeriod: isWithin
     });
   }
 
@@ -101,8 +105,12 @@ export default function Settlement() {
         <div className="flex justify-between items-center px-1">
           <div>
             <h2 className="text-[18px] font-extrabold text-[#191F28] tracking-tight leading-tight">
-              {format(targetDate, 'yyyy년 MM월 정산', { locale: ko })}
+              {/* 정산 기간을 제목에 명확히 표시 */}
+              {parseInt(settlement.endDate.split('-')[1], 10)}월 정산
             </h2>
+            <span className="text-[11px] font-semibold text-[#4E5968] mt-0.5 block">
+              {settlement.startDate.replace(/-/g, '.')} ~ {settlement.endDate.replace(/-/g, '.')}
+            </span>
             <span className="text-[11px] font-bold text-[#1850d4] mt-0.5 block">
               (수령일: {format(calculatePaymentDate(settlement.endDate, settings.payDay), 'MM/dd')})
             </span>
@@ -117,7 +125,8 @@ export default function Settlement() {
         {/* 요약 카드 */}
         <Card className="bg-white border border-[#E5E8EB] shadow-xs rounded-xl p-5">
           <div className="text-[11px] font-bold text-[#4E5968] tracking-wider uppercase mb-1 flex items-center justify-between">
-            <span>{targetDate.getMonth() + 1}월 정산액</span>
+            {/* endDate 기준 월을 정산액 라벨로 표시 (예: 5월 25일 마감 → 5월 정산액) */}
+            <span>{parseInt(settlement.endDate.split('-')[1], 10)}월 정산액</span>
             <span className="bg-[#E6F9F2] text-[#00D082] font-bold px-2 py-0.5 rounded-full text-[10px] tracking-normal uppercase">Settled</span>
           </div>
           <div className="text-[32px] font-extrabold text-[#191F28] tracking-tight mb-4">
@@ -165,29 +174,33 @@ export default function Settlement() {
                 const isSelected = format(cell.date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
                 
                 return (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className={cn(
                       "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all",
-                      !cell.isCurrentMonth && "opacity-25 pointer-events-none bg-[#f8f9fa]",
-                      cell.isCurrentMonth && !cell.isWithinPeriod && "bg-[#f8f9fa] opacity-40",
-                      cell.isCurrentMonth && cell.isWithinPeriod && (isSelected ? "bg-blue-50/40 hover:bg-blue-50/50" : "hover:bg-[#f8f9fa] bg-white"),
-                      cell.isCurrentMonth && isSelected && "ring-2 ring-[#1850d4] ring-inset z-2"
+                      // 정산기간 내 날짜는 이전/다음달 여부 무관하게 활성 표시
+                      cell.isWithinPeriod && !isSelected && "bg-white hover:bg-[#f8f9fa]",
+                      cell.isWithinPeriod && isSelected && "bg-blue-50/40 hover:bg-blue-50/50",
+                      // 정산기간 외 날짜는 흐리게
+                      !cell.isWithinPeriod && "bg-[#f8f9fa] opacity-30 pointer-events-none",
+                      // 오늘 날짜 테두리
+                      isSelected && "ring-2 ring-[#1850d4] ring-inset z-2"
                     )}
                   >
                     {/* 날짜 표시 */}
-                    <span 
+                    <span
                       className={cn(
                         "text-[9px] font-semibold leading-none",
                         isSunday && "text-[#F04452]",
                         isSaturday && "text-[#1850d4]",
-                        cell.isCurrentMonth && cell.isWithinPeriod ? "text-[#191F28]" : "text-[#4E5968]",
+                        cell.isWithinPeriod ? "text-[#191F28]" : "text-[#4E5968]",
+                        !cell.isCurrentMonth && cell.isWithinPeriod && "opacity-60",
                         isSelected && "font-extrabold text-[#1850d4]"
                       )}
                     >
                       {cell.date.getDate()}
                     </span>
-                    
+
                     {/* 배송 건수 표시 */}
                     {cell.isWithinPeriod && dailyTotal > 0 ? (
                       <div className="flex-1 flex items-center justify-center">
