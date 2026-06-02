@@ -17,5 +17,6 @@ export interface AppSettings {
   restDaysOfWeek: number[]; // 기본 휴무 요일 (0~6)
   settlementStartDay: number; // 정산 시작일 (1~28)
   payDay: number; // 월급일
+  freshBagIncentiveRate: number; // 프레쉬백 인센티브율 (%) — 매출에 가산
   commissionRate: number; // 회사 수수료율 (%)
 }

@@ -23,14 +23,14 @@ export function calculateDailyRevenue(record: DailyRecord, settings: AppSettings
     }
   }
   
-  // 프레쉬백 수입은 예상 실수령액 및 정산 계산에서 완전히 제외
-  const totalGrossRevenue = baseRevenue;
+  const freshBagIncentive = baseRevenue * ((settings.freshBagIncentiveRate || 0) / 100);
+  const totalGrossRevenue = baseRevenue + freshBagIncentive;
   const commissionDeduction = totalGrossRevenue * (settings.commissionRate / 100);
   const finalNetRevenue = totalGrossRevenue - commissionDeduction;
 
   return {
     baseRevenue,
-    freshBagRevenue: 0,
+    freshBagRevenue: freshBagIncentive,
     totalGrossRevenue,
     commissionDeduction,
     finalNetRevenue
