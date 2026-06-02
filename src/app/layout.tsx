@@ -9,6 +9,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "심플 배송 정산",
   description: "직관적인 초심플 배송 실적 및 정산 관리 앱",
+  icons: {
+    icon: '/icon-512.png',
+    apple: '/icon-512.png',
+  },
 };
 
 export const viewport: Viewport = {
