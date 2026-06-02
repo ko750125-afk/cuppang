@@ -26,7 +26,6 @@ export default function Home() {
   if (!currentDate) return <div className="p-4 text-center mt-10">로딩중...</div>;
 
   const dailyRecord = getDailyRecord(currentDate);
-  const totalDeliveries = Object.values(dailyRecord.deliveries).reduce((a, b) => a + b, 0);
 
   const handleZoneChange = (zoneId: string, value: string) => {
     const num = value === '' ? 0 : parseInt(value, 10);
@@ -81,16 +80,7 @@ export default function Home() {
           onSave={handleMissedSave}
         />
 
-        {/* 총 배송 요약 카드 */}
-        <Card className="bg-white border border-[#E5E8EB] shadow-xs rounded-xl p-5">
-          <div className="text-[11px] font-bold text-[#4E5968] text-center tracking-wider uppercase mb-1.5">TOTAL</div>
-          <div className="text-center flex items-baseline justify-center gap-1">
-            <span className="text-[36px] font-extrabold text-[#191F28] tracking-tight leading-none">{totalDeliveries.toLocaleString()}</span>
-            <span className="text-[16px] font-medium text-[#4E5968]">건</span>
-          </div>
-        </Card>
-
-        {/* 배송 입력 카드 */}
+{/* 배송 입력 카드 */}
         <div className="space-y-3 pt-2">
           {settings.zones.length > 0 && (
             <DeliveryInputCard
