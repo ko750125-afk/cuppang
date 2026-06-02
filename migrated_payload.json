@@ -1,0 +1,811 @@
+{
+  "document": {
+    "name": "projects/gen-lang-client-0701799372/databases/(default)/documents/cuppang_records/FGEZWVWjNAUniFFargUcP8YC9q52",
+    "fields": {
+      "records": {
+        "mapValue": {
+          "fields": {
+            "2026-03-01": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-03-01"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "120"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-03-02": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-03-02"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "135"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-03-03": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-03-03"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "142"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-03-04": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-03-04"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "155"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-03-05": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-03-05"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "160"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-01": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-01"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "414"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-02": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-02"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "367"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-03": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-03"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "372"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-04": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-04"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "374"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-05": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-05"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "362"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-08": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-08"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "365"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-09": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-09"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "411"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-10": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-10"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "405"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-11": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-11"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "345"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-12": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-12"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "361"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-13": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-13"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "0"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-15": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-15"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "423"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-16": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-16"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "435"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-17": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-17"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "322"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-18": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-18"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "348"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-19": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-19"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "428"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-22": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-22"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "375"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-23": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-23"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "410"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-24": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-24"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "321"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-25": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-25"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "357"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-04-26": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-04-26"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "447"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-20": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-20"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "384"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-21": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-21"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "395"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-22": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-22"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "366"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-23": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-23"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "388"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-24": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-24"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "379"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-27": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-27"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "437"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-28": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-28"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "361"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-29": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-29"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "358"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-30": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-30"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "409"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-05-31": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-05-31"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "402"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-06-02": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-06-02"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "0"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            },
+            "2026-06-03": {
+              "mapValue": {
+                "fields": {
+                  "date": {
+                    "stringValue": "2026-06-03"
+                  },
+                  "deliveries": {
+                    "mapValue": {
+                      "fields": {
+                        "1": {
+                          "integerValue": "0"
+                        }
+                      }
+                    }
+                  },
+                  "freshBagCount": {
+                    "integerValue": "0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
