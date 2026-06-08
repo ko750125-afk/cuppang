@@ -194,31 +194,23 @@ export default function Settlement() {
                     onClick={() => cell.isWithinPeriod && setSelectedDate(dateStr)}
                     className={cn(
                       "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all",
-                      // 기본 배경색 및 호버 효과 (해당 월 날짜면 흰색 배경, 전달/익월은 무조건 회색 배경)
-                      cell.isCurrentMonth 
-                        ? (isToday ? "bg-blue-50/40 hover:bg-blue-50/50" : "bg-white hover:bg-[#f8f9fa]")
-                        : "bg-[#F2F4F6]",
-                      
-                      // 정산 기간 외 비활성화 (포인터 이벤트 차단)
-                      !cell.isWithinPeriod ? "pointer-events-none" : "cursor-pointer active:scale-95",
-                      
-                      // 해당 달이 아닌 날짜(전월, 익월)는 시각적으로 투명도 낮춤
-                      !cell.isCurrentMonth && "opacity-70",
-                      
-                      isToday && "ring-2 ring-[#1850d4] ring-inset z-2"
+                      cell.isWithinPeriod ? "cursor-pointer active:scale-95 hover:bg-[#f8f9fa]" : "pointer-events-none",
+                      // 오늘: 파란 ring 강조
+                      isToday
+                        ? "bg-blue-50/40 hover:bg-blue-50/50 ring-2 ring-[#1850d4] ring-inset z-2"
+                        // 전월/익월: 테두리선으로만 구분, 배경은 동일한 흰색
+                        : !cell.isCurrentMonth && "ring-1 ring-inset ring-[#B0B8C1]",
                     )}
                   >
                     <span className={cn(
                       "text-[9px] font-semibold leading-none",
-                      // 정산 기간 내/외에 따른 텍스트 컬러 분화
-                      cell.isWithinPeriod 
-                        ? (dow === 0 ? "text-[#F04452]" : dow === 6 ? "text-[#1850d4]" : "text-[#191F28]")
-                        : (dow === 0 ? "text-[#F04452]/40" : dow === 6 ? "text-[#1850d4]/40" : "text-[#B0B8C1]"),
-                      
-                      // 순수 전월/익월 비정산 날짜만 글자색 보정
-                      (!cell.isCurrentMonth && !cell.isWithinPeriod) && "text-[#8B95A1]",
-                      
-                      isToday && "font-extrabold text-[#1850d4]"
+                      isToday
+                        ? "font-extrabold text-[#1850d4]"
+                        : cell.isWithinPeriod
+                          ? (dow === 0 ? "text-[#F04452]" : dow === 6 ? "text-[#1850d4]" : "text-[#191F28]")
+                          : (!cell.isCurrentMonth
+                              ? "text-[#8B95A1]"
+                              : (dow === 0 ? "text-[#F04452]/40" : dow === 6 ? "text-[#1850d4]/40" : "text-[#B0B8C1]")),
                     )}>
                       {cell.date.getDate()}
                     </span>
