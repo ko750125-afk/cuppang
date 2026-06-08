@@ -49,12 +49,14 @@ function buildCalendarCells(startDate: string, endDate: string): CalendarCell[] 
   return cells;
 }
 
+import { LoginRequired } from '@/components/features/LoginRequired';
+
 export default function Settlement() {
   const [targetDate, setTargetDate]       = useState<Date | null>(null);
   const [selectedDate, setSelectedDate]   = useState<string | null>(null);
   const [editDeliveries, setEditDeliveries] = useState<Record<string, number>>({});
 
-  const { settings, getAllRecords, getDailyRecord, updateDailyRecord } = useAppStore();
+  const { settings, getAllRecords, getDailyRecord, updateDailyRecord, user } = useAppStore();
 
   useEffect(() => {
     const today = new Date();
@@ -69,6 +71,7 @@ export default function Settlement() {
     }
   }, [selectedDate, getDailyRecord]);
 
+  if (!user) return <LoginRequired />;
   if (!targetDate) return <div className="p-4 text-center mt-10">로딩중...</div>;
 
   const records    = getAllRecords();

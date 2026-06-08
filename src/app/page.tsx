@@ -10,9 +10,11 @@ import { toDateString } from '@/lib/utils';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { DeliveryInputCard } from '@/components/features/DeliveryInputCard';
 
+import { LoginRequired } from '@/components/features/LoginRequired';
+
 export default function Home() {
   const [currentDate, setCurrentDate] = useState<string>('');
-  const { settings, updateDailyRecord, getDailyRecord } = useAppStore();
+  const { settings, updateDailyRecord, getDailyRecord, user } = useAppStore();
 
   useEffect(() => {
     // 새벽 근무자: 근무는 전날 시작 → 배송 기록은 근무 시작일(전날)로 저장
@@ -21,6 +23,7 @@ export default function Home() {
     setCurrentDate(toDateString(workStartDate));
   }, []);
 
+  if (!user) return <LoginRequired />;
   if (!currentDate) return <div className="p-4 text-center mt-10">로딩중...</div>;
 
   const dailyRecord = getDailyRecord(currentDate);
