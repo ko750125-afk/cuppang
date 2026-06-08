@@ -213,9 +213,14 @@ export default function Settlement() {
                       {cell.date.getDate()}
                     </span>
 
-                    {cell.isWithinPeriod && dailyTotal > 0 ? (
+                    {dailyTotal > 0 ? (
                       <div className="flex-1 flex items-center justify-center">
-                        <div className="bg-[#1850d4] text-white font-extrabold text-[10px] h-5 px-1 rounded-full flex items-center justify-center min-w-5 shadow-xs">
+                        <div className={cn(
+                          "font-extrabold text-[10px] h-5 px-1.5 rounded-full flex items-center justify-center min-w-5 shadow-xs transition-all",
+                          cell.isWithinPeriod 
+                            ? "bg-[#1850d4] text-white" 
+                            : "bg-[#E5E8EB] text-[#8B95A1] opacity-80" // 정산 외 기간은 차분한 회색 배지로 차별화
+                        )}>
                           {dailyTotal}
                         </div>
                       </div>
