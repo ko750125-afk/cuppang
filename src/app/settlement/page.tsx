@@ -33,7 +33,9 @@ function buildCalendarCells(startDate: string, endDate: string): CalendarCell[] 
   while (current <= lastDisplay) {
     const ds = toDateString(current);
     const isWithinPeriod = ds >= startDate && ds <= endDate;
-    cells.push({ date: new Date(current), isCurrentMonth: isWithinPeriod, isWithinPeriod });
+    // isCurrentMonth: endDate가 속한 월(정산 대상월)에 해당하는 날짜
+    const isCurrentMonth = current.getFullYear() === ey && current.getMonth() === em - 1;
+    cells.push({ date: new Date(current), isCurrentMonth, isWithinPeriod });
     current.setDate(current.getDate() + 1);
   }
 
@@ -148,9 +150,9 @@ export default function Settlement() {
                     key={index}
                     className={cn(
                       "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all",
-                      cell.isWithinPeriod && !isToday  && "bg-white hover:bg-[#f8f9fa]",
-                      cell.isWithinPeriod && isToday   && "bg-blue-50/40 hover:bg-blue-50/50",
-                      !cell.isWithinPeriod             && "bg-[#f8f9fa] opacity-30 pointer-events-none",
+                      cell.isCurrentMonth && !isToday  && "bg-white hover:bg-[#f8f9fa]",
+                      cell.isCurrentMonth && isToday   && "bg-blue-50/40 hover:bg-blue-50/50",
+                      !cell.isCurrentMonth             && "bg-[#f8f9fa] opacity-30 pointer-events-none",
                       isToday                          && "ring-2 ring-[#1850d4] ring-inset z-2"
                     )}
                   >
@@ -158,7 +160,7 @@ export default function Settlement() {
                       "text-[9px] font-semibold leading-none",
                       dow === 0 && "text-[#F04452]",
                       dow === 6 && "text-[#1850d4]",
-                      cell.isWithinPeriod ? "text-[#191F28]" : "text-[#4E5968]",
+                      cell.isCurrentMonth ? "text-[#191F28]" : "text-[#4E5968]",
                       !cell.isCurrentMonth && cell.isWithinPeriod && "opacity-60",
                       isToday && "font-extrabold text-[#1850d4]"
                     )}>
