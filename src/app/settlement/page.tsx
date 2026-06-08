@@ -12,25 +12,30 @@ import { AppHeader } from '@/components/layout/AppHeader';
 
 type CalendarCell = { date: Date; isCurrentMonth: boolean; isWithinPeriod: boolean };
 
-function buildCalendarCells(year: number, month: number, startDate: string, endDate: string): CalendarCell[] {
+function buildCalendarCells(startDate: string, endDate: string): CalendarCell[] {
   const cells: CalendarCell[] = [];
-  const firstDayOfWeek   = new Date(year, month, 1).getDay();
-  const totalDays        = new Date(year, month + 1, 0).getDate();
-  const prevMonthDays    = new Date(year, month, 0).getDate();
 
-  const cell = (date: Date, isCurrentMonth: boolean): CalendarCell => {
-    const ds = toDateString(date);
-    return { date, isCurrentMonth, isWithinPeriod: ds >= startDate && ds <= endDate };
-  };
+  // 날짜 문자열을 로컬 기준 Date로 파싱
+  const [sy, sm, sd] = startDate.split('-').map(Number);
+  const [ey, em, ed] = endDate.split('-').map(Number);
+  const start = new Date(sy, sm - 1, sd);
+  const end   = new Date(ey, em - 1, ed);
 
-  for (let i = firstDayOfWeek - 1; i >= 0; i--)
-    cells.push(cell(new Date(year, month - 1, prevMonthDays - i), false));
+  // 정산 시작일이 속한 주의 일요일부터 시작
+  const firstDisplay = new Date(start);
+  firstDisplay.setDate(firstDisplay.getDate() - firstDisplay.getDay());
 
-  for (let i = 1; i <= totalDays; i++)
-    cells.push(cell(new Date(year, month, i), true));
+  // 정산 종료일이 속한 주의 토요일까지
+  const lastDisplay = new Date(end);
+  lastDisplay.setDate(lastDisplay.getDate() + (6 - lastDisplay.getDay()));
 
-  for (let i = 1; i <= 42 - cells.length; i++)
-    cells.push(cell(new Date(year, month + 1, i), false));
+  const current = new Date(firstDisplay);
+  while (current <= lastDisplay) {
+    const ds = toDateString(current);
+    const isWithinPeriod = ds >= startDate && ds <= endDate;
+    cells.push({ date: new Date(current), isCurrentMonth: isWithinPeriod, isWithinPeriod });
+    current.setDate(current.getDate() + 1);
+  }
 
   return cells;
 }
@@ -55,8 +60,6 @@ export default function Settlement() {
   };
 
   const calendarCells = buildCalendarCells(
-    targetDate.getFullYear(),
-    targetDate.getMonth(),
     settlement.startDate,
     settlement.endDate
   );
@@ -112,10 +115,17 @@ export default function Settlement() {
 
         {/* 월별 배송 내역 (달력 형태) */}
         <div className="space-y-3">
-          <h3 className="font-bold text-[16px] text-[#191F28] px-1">
-            월별 배송 내역
-            <span className="text-[13px] font-semibold text-[#4E5968] ml-2">{format(targetDate, 'yyyy년 M월', { locale: ko })}</span>
-          </h3>
+          <div className="flex items-center justify-between px-1">
+            <h3 className="font-bold text-[16px] text-[#191F28]">
+              월별 배송 내역
+              <span className="text-[13px] font-semibold text-[#4E5968] ml-2">{format(targetDate, 'yyyy년 M월', { locale: ko })}</span>
+            </h3>
+            <div className="flex items-center gap-1.5 bg-white border border-[#E5E8EB] rounded-lg px-1.5 py-0.5 shadow-xs">
+              <Button variant="ghost" onClick={() => changeMonth(-1)} className="h-6 w-6 p-0 rounded-md text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">&lt;</Button>
+              <span className="text-[11px] font-bold text-[#191F28]">{format(targetDate, 'yyyy.MM')}</span>
+              <Button variant="ghost" onClick={() => changeMonth(1)} className="h-6 w-6 p-0 rounded-md text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">&gt;</Button>
+            </div>
+          </div>
           <Card className="rounded-xl overflow-hidden shadow-xs border border-[#E5E8EB] bg-white p-4">
             {/* 요일 헤더 */}
             <div className="grid grid-cols-7 gap-1 text-center font-bold text-[11px] text-[#4E5968] pb-2 border-b border-[#E5E8EB]">
