@@ -7,8 +7,8 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { toDateString } from '@/lib/utils';
 import { DailyRecord } from '@/types';
 
-const START = '2025-03-06';
-const END   = '2025-05-17';
+const START = '2026-03-06';
+const END   = '2026-05-17';
 const COUNT = 380;
 
 function getDatesInRange(startStr: string, endStr: string): string[] {
@@ -121,7 +121,7 @@ export default function SeedPage() {
     <div className="p-6 max-w-sm mx-auto">
       <h1 className="text-lg font-bold mb-1">데이터 시드</h1>
       <p className="text-xs text-gray-500 mb-4">
-        {START} ~ {END} 중 비어있는 날짜(월·화 제외)에 배송 {COUNT}개를 채웁니다.
+        2026-03-06 ~ 2026-05-17 중 비어있는 날짜(월·화 제외)에 배송 {COUNT}개를 채웁니다.
       </p>
 
       {!done && (
