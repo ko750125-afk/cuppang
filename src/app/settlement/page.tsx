@@ -31,14 +31,18 @@ function buildCalendarCells(startDate: string, endDate: string): CalendarCell[] 
   const lastDisplay = new Date(end);
   lastDisplay.setDate(lastDisplay.getDate() + (6 - lastDisplay.getDay()));
 
-  const current = new Date(firstDisplay);
-  while (current <= lastDisplay) {
-    const ds = toDateString(current);
+  // 총 표시 일수 사전 계산 (Date 비교 오류 회피)
+  const totalDays = Math.round(
+    (lastDisplay.getTime() - firstDisplay.getTime()) / (1000 * 60 * 60 * 24)
+  ) + 1;
+
+  for (let i = 0; i < totalDays; i++) {
+    const date = new Date(firstDisplay.getFullYear(), firstDisplay.getMonth(), firstDisplay.getDate() + i);
+    const ds = toDateString(date);
     const isWithinPeriod = ds >= startDate && ds <= endDate;
     // isCurrentMonth: endDate가 속한 월(정산 대상월)에 해당하는 날짜
-    const isCurrentMonth = current.getFullYear() === ey && current.getMonth() === em - 1;
-    cells.push({ date: new Date(current), isCurrentMonth, isWithinPeriod });
-    current.setDate(current.getDate() + 1);
+    const isCurrentMonth = date.getFullYear() === ey && date.getMonth() === em - 1;
+    cells.push({ date, isCurrentMonth, isWithinPeriod });
   }
 
   return cells;
