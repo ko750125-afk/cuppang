@@ -27,8 +27,9 @@ function buildCalendarCells(startDate: string, endDate: string): CalendarCell[] 
   const firstDisplay = new Date(start);
   firstDisplay.setDate(firstDisplay.getDate() - firstDisplay.getDay());
 
-  // 정산 종료일이 속한 주의 토요일까지
-  const lastDisplay = new Date(end);
+  // 정산 종료일이 속한 월의 말일이 속한 주의 토요일까지
+  const endOfMonth = new Date(ey, em, 0);
+  const lastDisplay = new Date(endOfMonth);
   lastDisplay.setDate(lastDisplay.getDate() + (6 - lastDisplay.getDay()));
 
   // 총 표시 일수 사전 계산 (Date 비교 오류 회피)
@@ -180,10 +181,17 @@ export default function Settlement() {
                     onClick={() => cell.isWithinPeriod && setSelectedDate(dateStr)}
                     className={cn(
                       "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all",
-                      cell.isCurrentMonth && !isToday  && "bg-white hover:bg-[#f8f9fa]",
-                      cell.isCurrentMonth && isToday   && "bg-blue-50/40 hover:bg-blue-50/50",
-                      !cell.isCurrentMonth             && "bg-[#f8f9fa] opacity-30 pointer-events-none",
-                      cell.isWithinPeriod              && "cursor-pointer active:scale-95",
+                      // 기본 배경색 및 호버 효과
+                      cell.isCurrentMonth 
+                        ? (isToday ? "bg-blue-50/40 hover:bg-blue-50/50" : "bg-white hover:bg-[#f8f9fa]")
+                        : "bg-[#f8f9fa]", // 해달월 이외(전월, 익월)는 회색 배경
+                      
+                      // 정산 기간 외 비활성화
+                      !cell.isWithinPeriod ? "pointer-events-none opacity-25" : "cursor-pointer active:scale-95",
+                      
+                      // 해달월 이외(전월, 익월)의 투명도 처리 (정산 기간 내여도 이전달/다음달이면 회색빛을 띄게 함)
+                      !cell.isCurrentMonth && cell.isWithinPeriod && "opacity-60",
+                      
                       isToday                          && "ring-2 ring-[#1850d4] ring-inset z-2"
                     )}
                   >
