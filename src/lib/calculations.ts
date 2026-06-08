@@ -1,37 +1,49 @@
 import { AppSettings, DailyRecord } from "@/types";
 import { toDateString } from "@/lib/utils";
 
+/**
+ * 하루 배송 매출을 계산합니다.
+ *
+ * - 구역(Zone)별 단가가 다른 경우를 정확히 처리합니다.
+ * - 구역 ID가 재생성된 경우(ID 불일치) 단일 구역 한정 전체 건수로 폴백합니다.
+ */
 export function calculateDailyRevenue(record: DailyRecord, settings: AppSettings) {
-  let baseRevenue = 0;
-
+  // 구역 ID → 단가 맵
   const zoneMap = new Map(settings.zones.map(z => [z.id, z.price]));
-  for (const [zoneId, count] of Object.entries(record.deliveries)) {
-    const price = zoneMap.get(zoneId);
-    if (price !== undefined) baseRevenue += count * price;
-  }
 
-  // zone ID가 바뀐 경우(구역 재생성 등) 구역이 하나뿐이면 해당 단가로 전체 건수 계산
+  // 구역별 (배송 건수 × 단가) 합산
+  let baseRevenue = Object.entries(record.deliveries).reduce((sum, [zoneId, count]) => {
+    const price = zoneMap.get(zoneId);
+    return price !== undefined ? sum + count * price : sum;
+  }, 0);
+
+  // 폴백: 구역 ID 변경(재생성) 등으로 매칭 실패 + 단일 구역인 경우
   if (baseRevenue === 0 && settings.zones.length === 1) {
     const totalCount = Object.values(record.deliveries).reduce((a, b) => a + b, 0);
     if (totalCount > 0) baseRevenue = totalCount * settings.zones[0].price;
   }
 
-  const freshBagIncentive = settings.freshBagIncentive || 0;
-  const totalGrossRevenue = baseRevenue + freshBagIncentive;
-  const commissionDeduction = totalGrossRevenue * (settings.commissionRate / 100);
+  // 일별 프레쉬백 인센티브 (근무일마다 가산되는 고정 금액)
+  const dailyIncentive  = settings.freshBagIncentive ?? 0;
+  const grossRevenue    = baseRevenue + dailyIncentive;
+  const commissionDeduction = grossRevenue * (settings.commissionRate / 100);
 
   return {
     baseRevenue,
-    freshBagRevenue: freshBagIncentive,
-    totalGrossRevenue,
+    freshBagRevenue:   dailyIncentive,       // 하위 호환성 유지
+    totalGrossRevenue: grossRevenue,
     commissionDeduction,
-    finalNetRevenue: totalGrossRevenue - commissionDeduction,
+    finalNetRevenue:   grossRevenue - commissionDeduction,
   };
 }
 
+/**
+ * 정산 기준일(startDay)을 기준으로 targetDate가 속하는 정산 기간을 반환합니다.
+ * 예) startDay=26, targetDate=6/9 → startDate=5/26, endDate=6/25
+ */
 export function getSettlementPeriod(date: Date, startDay: number) {
   let startMonth = date.getMonth();
-  let startYear = date.getFullYear();
+  let startYear  = date.getFullYear();
 
   if (date.getDate() < startDay) {
     startMonth -= 1;
@@ -42,11 +54,12 @@ export function getSettlementPeriod(date: Date, startDay: number) {
   }
 
   return {
-    startDate: toDateString(new Date(startYear, startMonth, startDay)),
-    endDate: toDateString(new Date(startYear, startMonth + 1, startDay - 1)),
+    startDate: toDateString(new Date(startYear, startMonth,     startDay)),
+    endDate:   toDateString(new Date(startYear, startMonth + 1, startDay - 1)),
   };
 }
 
+/** 정산 기간 내 전체 합계를 계산합니다. */
 export function calculateMonthlySettlement(
   targetDate: Date,
   records: DailyRecord[],
@@ -57,7 +70,7 @@ export function calculateMonthlySettlement(
 
   const totals = periodRecords.reduce(
     (acc, record) => {
-      const daily = calculateDailyRevenue(record, settings);
+      const daily         = calculateDailyRevenue(record, settings);
       const deliveryCount = Object.values(record.deliveries).reduce((a, b) => a + b, 0);
       return {
         baseRevenue:         acc.baseRevenue         + daily.baseRevenue,
@@ -87,7 +100,7 @@ export function calculateMonthlySettlement(
 }
 
 /**
- * 정산 마감일 기준 다음 달 payDay 수령일을 반환합니다.
+ * 정산 마감일 기준 익월 payDay를 수령일로 반환합니다.
  * endDateStr의 month(1-based)를 JS Date month(0-based)로 그대로 넘기면 자동으로 익월이 됩니다.
  */
 export function calculatePaymentDate(endDateStr: string, payDay: number): Date {

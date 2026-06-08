@@ -64,15 +64,16 @@ export default function Home() {
           </div>
         </Card>
 
-        {/* 배송 입력 카드 */}
+        {/* 배송 입력 카드 — 라우트별로 모두 표시 */}
         <div className="space-y-3 pt-2">
-          {settings.zones.length > 0 && (
+          {settings.zones.map(zone => (
             <DeliveryInputCard
-              zone={settings.zones[0]}
+              key={zone.id}
+              zone={zone}
               record={dailyRecord}
               onCountChange={handleZoneChange}
             />
-          )}
+          ))}
         </div>
       </div>
     </div>
