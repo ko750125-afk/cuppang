@@ -184,23 +184,27 @@ export default function Settlement() {
                       // 기본 배경색 및 호버 효과
                       cell.isCurrentMonth 
                         ? (isToday ? "bg-blue-50/40 hover:bg-blue-50/50" : "bg-white hover:bg-[#f8f9fa]")
-                        : "bg-[#f8f9fa]", // 해달월 이외(전월, 익월)는 회색 배경
+                        : "bg-[#F2F4F6]", // 해달월 이외(전월, 익월)는 선명하고 고급스러운 회색 배경 적용
                       
-                      // 정산 기간 외 비활성화
-                      !cell.isWithinPeriod ? "pointer-events-none opacity-25" : "cursor-pointer active:scale-95",
+                      // 정산 기간 외 비활성화 (포인터 이벤트만 차단, 투명도는 글자색 대비로 구분)
+                      !cell.isWithinPeriod ? "pointer-events-none" : "cursor-pointer active:scale-95",
                       
-                      // 해달월 이외(전월, 익월)의 투명도 처리 (정산 기간 내여도 이전달/다음달이면 회색빛을 띄게 함)
-                      !cell.isCurrentMonth && cell.isWithinPeriod && "opacity-60",
+                      // 해달월 이외(전월, 익월)의 추가 시각 처리
+                      !cell.isCurrentMonth && "opacity-70",
                       
-                      isToday                          && "ring-2 ring-[#1850d4] ring-inset z-2"
+                      isToday && "ring-2 ring-[#1850d4] ring-inset z-2"
                     )}
                   >
                     <span className={cn(
                       "text-[9px] font-semibold leading-none",
-                      dow === 0 && "text-[#F04452]",
-                      dow === 6 && "text-[#1850d4]",
-                      cell.isCurrentMonth ? "text-[#191F28]" : "text-[#4E5968]",
-                      !cell.isCurrentMonth && cell.isWithinPeriod && "opacity-60",
+                      // 정산 기간 내/외에 따른 텍스트 컬러 분화
+                      cell.isWithinPeriod 
+                        ? (dow === 0 ? "text-[#F04452]" : dow === 6 ? "text-[#1850d4]" : "text-[#191F28]")
+                        : (dow === 0 ? "text-[#F04452]/40" : dow === 6 ? "text-[#1850d4]/40" : "text-[#B0B8C1]"),
+                      
+                      // 해달월 이외(전월, 익월) 글자색 보정
+                      !cell.isCurrentMonth && "text-[#8B95A1]",
+                      
                       isToday && "font-extrabold text-[#1850d4]"
                     )}>
                       {cell.date.getDate()}
