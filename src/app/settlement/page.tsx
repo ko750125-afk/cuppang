@@ -99,7 +99,7 @@ export default function Settlement() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F8F9FA] fade-in pb-10">
+    <div className="flex flex-col min-h-screen bg-[#F8F9FA] fade-in pb-24">
       <AppHeader />
 
       <div className="p-5 space-y-5">
@@ -157,7 +157,7 @@ export default function Settlement() {
               <Button variant="ghost" onClick={() => changeMonth(1)} className="h-6 w-6 p-0 rounded-md text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">&gt;</Button>
             </div>
           </div>
-          <Card className="rounded-xl overflow-hidden shadow-xs border border-[#E5E8EB] bg-white p-4">
+          <Card className="rounded-xl shadow-xs border border-[#E5E8EB] bg-white p-4">
             {/* 요일 헤더 */}
             <div className="grid grid-cols-7 gap-1 text-center font-bold text-[11px] text-[#4E5968] pb-2 border-b border-[#E5E8EB]">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, idx) => (
