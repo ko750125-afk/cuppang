@@ -14,25 +14,27 @@ import { AppHeader } from '@/components/layout/AppHeader';
 
 type CalendarCell = { date: Date; isCurrentMonth: boolean; isWithinPeriod: boolean };
 
-function buildCalendarCells(startDate: string, endDate: string): CalendarCell[] {
+function buildCalendarCells(
+  monthStartStr: string,
+  monthEndStr: string,
+  settlementStart: string,
+  settlementEnd: string
+): CalendarCell[] {
   const cells: CalendarCell[] = [];
 
-  // 날짜 문자열을 로컬 기준 Date로 파싱
-  const [sy, sm, sd] = startDate.split('-').map(Number);
-  const [ey, em, ed] = endDate.split('-').map(Number);
-  const start = new Date(sy, sm - 1, sd);
-  const end   = new Date(ey, em - 1, ed);
+  const [msy, msm, msd] = monthStartStr.split('-').map(Number);
+  const [mey, mem, med] = monthEndStr.split('-').map(Number);
+  const monthStart = new Date(msy, msm - 1, msd);
+  const monthEnd   = new Date(mey, mem - 1, med);
 
-  // 정산 시작일이 속한 주의 일요일부터 시작
-  const firstDisplay = new Date(start);
+  // 달력 첫날: 해당 월 1일이 속한 주의 일요일
+  const firstDisplay = new Date(monthStart);
   firstDisplay.setDate(firstDisplay.getDate() - firstDisplay.getDay());
 
-  // 정산 종료일이 속한 월의 말일이 속한 주의 토요일까지
-  const endOfMonth = new Date(ey, em, 0);
-  const lastDisplay = new Date(endOfMonth);
+  // 달력 마지막날: 해당 월 말일이 속한 주의 토요일
+  const lastDisplay = new Date(monthEnd);
   lastDisplay.setDate(lastDisplay.getDate() + (6 - lastDisplay.getDay()));
 
-  // 총 표시 일수 사전 계산 (Date 비교 오류 회피)
   const totalDays = Math.round(
     (lastDisplay.getTime() - firstDisplay.getTime()) / (1000 * 60 * 60 * 24)
   ) + 1;
@@ -40,9 +42,9 @@ function buildCalendarCells(startDate: string, endDate: string): CalendarCell[] 
   for (let i = 0; i < totalDays; i++) {
     const date = new Date(firstDisplay.getFullYear(), firstDisplay.getMonth(), firstDisplay.getDate() + i);
     const ds = toDateString(date);
-    const isWithinPeriod = ds >= startDate && ds <= endDate;
-    // isCurrentMonth: endDate가 속한 월(정산 대상월)에 해당하는 날짜
-    const isCurrentMonth = date.getFullYear() === ey && date.getMonth() === em - 1;
+    const isWithinPeriod = ds >= settlementStart && ds <= settlementEnd;
+    // isCurrentMonth: 해당 targetDate의 월에 속하는지 여부
+    const isCurrentMonth = date.getFullYear() === msy && date.getMonth() === msm - 1;
     cells.push({ date, isCurrentMonth, isWithinPeriod });
   }
 
@@ -82,7 +84,14 @@ export default function Settlement() {
     setTargetDate(new Date(targetDate.getFullYear(), targetDate.getMonth() + offset, 1));
   };
 
+  const targetYear  = targetDate.getFullYear();
+  const targetMonth = targetDate.getMonth(); // 0-based
+  const monthStart  = toDateString(new Date(targetYear, targetMonth, 1));
+  const monthEnd    = toDateString(new Date(targetYear, targetMonth + 1, 0));
+
   const calendarCells = buildCalendarCells(
+    monthStart,
+    monthEnd,
     settlement.startDate,
     settlement.endDate
   );
@@ -185,16 +194,16 @@ export default function Settlement() {
                     onClick={() => cell.isWithinPeriod && setSelectedDate(dateStr)}
                     className={cn(
                       "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all",
-                      // 기본 배경색 및 호버 효과 (이번 정산 대상이거나 해당 월에 속하면 흰색, 순수 전월/익월 비정산 날짜는 회색)
-                      (cell.isWithinPeriod || cell.isCurrentMonth)
+                      // 기본 배경색 및 호버 효과 (해당 월 날짜면 흰색 배경, 전달/익월은 무조건 회색 배경)
+                      cell.isCurrentMonth 
                         ? (isToday ? "bg-blue-50/40 hover:bg-blue-50/50" : "bg-white hover:bg-[#f8f9fa]")
                         : "bg-[#F2F4F6]",
                       
                       // 정산 기간 외 비활성화 (포인터 이벤트 차단)
                       !cell.isWithinPeriod ? "pointer-events-none" : "cursor-pointer active:scale-95",
                       
-                      // 순수 전월/익월 비정산 날짜만 투명도 적용
-                      (!cell.isCurrentMonth && !cell.isWithinPeriod) && "opacity-70",
+                      // 해당 달이 아닌 날짜(전월, 익월)는 시각적으로 투명도 낮춤
+                      !cell.isCurrentMonth && "opacity-70",
                       
                       isToday && "ring-2 ring-[#1850d4] ring-inset z-2"
                     )}
