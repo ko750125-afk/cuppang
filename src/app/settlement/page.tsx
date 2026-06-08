@@ -5,6 +5,8 @@ import { useAppStore } from '@/hooks/useAppStore';
 import { calculateMonthlySettlement, calculatePaymentDate } from '@/lib/calculations';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { cn, toDateString } from '@/lib/utils';
@@ -43,13 +45,24 @@ function buildCalendarCells(startDate: string, endDate: string): CalendarCell[] 
 }
 
 export default function Settlement() {
-  const [targetDate, setTargetDate] = useState<Date | null>(null);
-  const { settings, getAllRecords } = useAppStore();
+  const [targetDate, setTargetDate]       = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate]   = useState<string | null>(null);
+  const [editDeliveries, setEditDeliveries] = useState<Record<string, number>>({});
+
+  const { settings, getAllRecords, getDailyRecord, updateDailyRecord } = useAppStore();
 
   useEffect(() => {
     const today = new Date();
     setTargetDate(new Date(today.getFullYear(), today.getMonth(), 1));
   }, []);
+
+  // 날짜 선택 시 기존 레코드 로드
+  useEffect(() => {
+    if (selectedDate) {
+      const rec = getDailyRecord(selectedDate);
+      setEditDeliveries(rec.deliveries || {});
+    }
+  }, [selectedDate, getDailyRecord]);
 
   if (!targetDate) return <div className="p-4 text-center mt-10">로딩중...</div>;
 
@@ -68,6 +81,18 @@ export default function Settlement() {
 
   const todayStr = toDateString(new Date());
   const WEEKDAY_COLORS = ['text-[#F04452]', '', '', '', '', '', 'text-[#1850d4]'];
+
+  const handleSave = () => {
+    if (!selectedDate) return;
+    updateDailyRecord(selectedDate, { deliveries: editDeliveries });
+    setSelectedDate(null);
+  };
+
+  // 다이얼로그 타이틀용 날짜 포맷 (UTC 오프셋 회피)
+  const formatDialogDate = (dateStr: string) => {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return format(new Date(y, m - 1, d), 'M월 d일 (EEE)', { locale: ko });
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] fade-in pb-10">
@@ -136,7 +161,7 @@ export default function Settlement() {
               ))}
             </div>
 
-            {/* 날짜 그리드 */}
+            {/* 날짜 그리드 — 정산 기간 셀은 클릭 가능 */}
             <div className="grid grid-cols-7 gap-[1px] bg-[#E5E8EB] border border-[#E5E8EB] rounded-lg overflow-hidden mt-3">
               {calendarCells.map((cell, index) => {
                 const dateStr    = toDateString(cell.date);
@@ -148,11 +173,13 @@ export default function Settlement() {
                 return (
                   <div
                     key={index}
+                    onClick={() => cell.isWithinPeriod && setSelectedDate(dateStr)}
                     className={cn(
                       "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all",
                       cell.isCurrentMonth && !isToday  && "bg-white hover:bg-[#f8f9fa]",
                       cell.isCurrentMonth && isToday   && "bg-blue-50/40 hover:bg-blue-50/50",
                       !cell.isCurrentMonth             && "bg-[#f8f9fa] opacity-30 pointer-events-none",
+                      cell.isWithinPeriod              && "cursor-pointer active:scale-95",
                       isToday                          && "ring-2 ring-[#1850d4] ring-inset z-2"
                     )}
                   >
@@ -183,6 +210,55 @@ export default function Settlement() {
           </Card>
         </div>
       </div>
+
+      {/* 날짜 클릭 시 배송 건수 입력 다이얼로그 */}
+      <Dialog open={!!selectedDate} onOpenChange={(open) => { if (!open) setSelectedDate(null); }}>
+        <DialogContent className="max-w-sm rounded-2xl p-5 border-[#E5E8EB]">
+          <DialogHeader>
+            <DialogTitle className="text-[15px] font-extrabold text-[#191F28]">
+              {selectedDate ? formatDialogDate(selectedDate) : ''} 배송 입력
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-2.5 py-2">
+            {settings.zones.map((zone) => (
+              <div key={zone.id} className="flex items-center justify-between p-3 border border-[#E5E8EB] rounded-xl bg-white shadow-xs">
+                <div>
+                  <span className="font-bold text-xs text-[#191F28] block">{zone.name}</span>
+                  <span className="text-[11px] text-[#4E5968] font-medium mt-0.5 block">단가 {zone.price.toLocaleString()}원</span>
+                </div>
+                <div className="w-24 relative">
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={editDeliveries[zone.id] === undefined ? '' : editDeliveries[zone.id]}
+                    onChange={(e) => {
+                      const num = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
+                      if (!isNaN(num)) setEditDeliveries(prev => ({ ...prev, [zone.id]: num }));
+                    }}
+                    placeholder="0"
+                    className="text-right pr-8 h-9 text-xs font-bold rounded-lg border-[#E5E8EB] bg-[#f8f9fa] focus:bg-white focus:border-[#1850d4]"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#4E5968] pointer-events-none">건</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-2 pt-1">
+            <Button variant="outline" className="flex-1 rounded-lg h-10 text-xs" onClick={() => setSelectedDate(null)}>
+              취소
+            </Button>
+            <Button
+              className="flex-1 rounded-lg h-10 bg-[#041627] text-white text-xs font-semibold hover:bg-[#1a2b3c]"
+              onClick={handleSave}
+            >
+              저장
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

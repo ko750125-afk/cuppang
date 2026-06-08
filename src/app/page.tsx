@@ -9,7 +9,6 @@ import { enUS } from 'date-fns/locale';
 import { toDateString } from '@/lib/utils';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { DeliveryInputCard } from '@/components/features/DeliveryInputCard';
-import { MissedDeliveryDialog } from '@/components/features/MissedDeliveryDialog';
 
 export default function Home() {
   const [currentDate, setCurrentDate] = useState<string>('');
@@ -40,11 +39,6 @@ export default function Home() {
     setCurrentDate(toDateString(d));
   };
 
-  const handleMissedSave = (date: string, deliveries: Record<string, number>) => {
-    updateDailyRecord(date, { deliveries });
-    setCurrentDate(date);
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] fade-in pb-10">
       <AppHeader />
@@ -69,13 +63,6 @@ export default function Home() {
             </Button>
           </div>
         </Card>
-
-        {/* 누락 배송 입력 다이얼로그 */}
-        <MissedDeliveryDialog
-          zones={settings.zones}
-          getRecord={getDailyRecord}
-          onSave={handleMissedSave}
-        />
 
         {/* 배송 입력 카드 */}
         <div className="space-y-3 pt-2">
