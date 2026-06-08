@@ -173,9 +173,10 @@ export default function Settlement() {
             <div className="grid grid-cols-7 gap-[1px] bg-[#E5E8EB] border border-[#E5E8EB] rounded-lg overflow-hidden mt-3">
               {calendarCells.map((cell, index) => {
                 const dateStr    = toDateString(cell.date);
+                const dow        = cell.date.getDay();
+
                 const rec        = records.find(r => r.date === dateStr);
                 const dailyTotal = rec ? Object.values(rec.deliveries).reduce((a, b) => a + b, 0) : 0;
-                const dow        = cell.date.getDay();
                 const isToday    = dateStr === todayStr;
 
                 return (
@@ -184,16 +185,16 @@ export default function Settlement() {
                     onClick={() => cell.isWithinPeriod && setSelectedDate(dateStr)}
                     className={cn(
                       "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all",
-                      // 기본 배경색 및 호버 효과
-                      cell.isCurrentMonth 
+                      // 기본 배경색 및 호버 효과 (이번 정산 대상이거나 해당 월에 속하면 흰색, 순수 전월/익월 비정산 날짜는 회색)
+                      (cell.isWithinPeriod || cell.isCurrentMonth)
                         ? (isToday ? "bg-blue-50/40 hover:bg-blue-50/50" : "bg-white hover:bg-[#f8f9fa]")
-                        : "bg-[#F2F4F6]", // 해달월 이외(전월, 익월)는 선명하고 고급스러운 회색 배경 적용
+                        : "bg-[#F2F4F6]",
                       
-                      // 정산 기간 외 비활성화 (포인터 이벤트만 차단, 투명도는 글자색 대비로 구분)
+                      // 정산 기간 외 비활성화 (포인터 이벤트 차단)
                       !cell.isWithinPeriod ? "pointer-events-none" : "cursor-pointer active:scale-95",
                       
-                      // 해달월 이외(전월, 익월)의 추가 시각 처리
-                      !cell.isCurrentMonth && "opacity-70",
+                      // 순수 전월/익월 비정산 날짜만 투명도 적용
+                      (!cell.isCurrentMonth && !cell.isWithinPeriod) && "opacity-70",
                       
                       isToday && "ring-2 ring-[#1850d4] ring-inset z-2"
                     )}
@@ -205,8 +206,8 @@ export default function Settlement() {
                         ? (dow === 0 ? "text-[#F04452]" : dow === 6 ? "text-[#1850d4]" : "text-[#191F28]")
                         : (dow === 0 ? "text-[#F04452]/40" : dow === 6 ? "text-[#1850d4]/40" : "text-[#B0B8C1]"),
                       
-                      // 해달월 이외(전월, 익월) 글자색 보정
-                      !cell.isCurrentMonth && "text-[#8B95A1]",
+                      // 순수 전월/익월 비정산 날짜만 글자색 보정
+                      (!cell.isCurrentMonth && !cell.isWithinPeriod) && "text-[#8B95A1]",
                       
                       isToday && "font-extrabold text-[#1850d4]"
                     )}>
