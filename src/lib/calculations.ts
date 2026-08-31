@@ -107,3 +107,38 @@ export function calculatePaymentDate(endDateStr: string, payDay: number): Date {
   const [year, month] = endDateStr.split('-').map(Number);
   return new Date(year, month, payDay);
 }
+
+/**
+ * 기준일(referenceDate)로부터 최근 windowDays일(당일 포함) 구간의
+ * 일 평균 배송 건수를 계산합니다.
+ *
+ * - 분모는 실제 배송 기록이 있는 근무일 수입니다(쉬는 날 포함 시 평균이 왜곡되므로 제외).
+ */
+export function calculateAverageDeliveries(
+  records: DailyRecord[],
+  windowDays: number = 25,
+  referenceDate: Date = new Date()
+) {
+  const endDate   = toDateString(referenceDate);
+  const startDate = toDateString(
+    new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate() - (windowDays - 1))
+  );
+
+  const windowRecords = records.filter(r => r.date >= startDate && r.date <= endDate);
+  const totalDeliveries = windowRecords.reduce(
+    (sum, r) => sum + Object.values(r.deliveries).reduce((a, b) => a + b, 0),
+    0
+  );
+  const workedDays = windowRecords.filter(
+    r => Object.values(r.deliveries).reduce((a, b) => a + b, 0) > 0
+  ).length;
+
+  return {
+    startDate,
+    endDate,
+    windowDays,
+    totalDeliveries,
+    workedDays,
+    averagePerWorkedDay: workedDays > 0 ? totalDeliveries / workedDays : 0,
+  };
+}

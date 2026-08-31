@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAppStore } from '@/hooks/useAppStore';
-import { calculateMonthlySettlement, calculatePaymentDate } from '@/lib/calculations';
+import { calculateMonthlySettlement, calculatePaymentDate, calculateAverageDeliveries } from '@/lib/calculations';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -76,9 +76,10 @@ export default function Settlement() {
   if (!user) return <LoginRequired />;
   if (!targetDate) return <div className="p-4 text-center mt-10">로딩중...</div>;
 
-  const records    = getAllRecords();
-  const settlement = calculateMonthlySettlement(targetDate, records, settings);
-  const endMonth   = parseInt(settlement.endDate.split('-')[1], 10);
+  const records       = getAllRecords();
+  const settlement    = calculateMonthlySettlement(targetDate, records, settings);
+  const endMonth      = parseInt(settlement.endDate.split('-')[1], 10);
+  const avgDeliveries = calculateAverageDeliveries(records);
 
   const changeMonth = (offset: number) => {
     setTargetDate(new Date(targetDate.getFullYear(), targetDate.getMonth() + offset, 1));
@@ -153,6 +154,27 @@ export default function Settlement() {
             <div className="flex justify-between">
               <span>수수료 공제 ({settings.commissionRate}%)</span>
               <span className="text-[#F04452] font-bold">- ₩{Math.floor(settlement.totalCommissionDeduction).toLocaleString()}</span>
+            </div>
+          </div>
+        </Card>
+
+        {/* 최근 25일 평균 배송 건수 */}
+        <Card className="bg-white border border-[#E5E8EB] shadow-xs rounded-xl p-5">
+          <div className="text-[11px] font-bold text-[#4E5968] tracking-wider uppercase mb-1 flex items-center justify-between">
+            <span>최근 {avgDeliveries.windowDays}일 평균 배송</span>
+            <span className="text-[10px] font-semibold text-[#8B95A1] tracking-normal normal-case">
+              {avgDeliveries.startDate.replace(/-/g, '.')} ~ {avgDeliveries.endDate.replace(/-/g, '.')}
+            </span>
+          </div>
+          <div className="flex items-end justify-between">
+            <div className="text-[28px] font-extrabold text-[#191F28] tracking-tight">
+              {avgDeliveries.averagePerWorkedDay.toFixed(1)}
+              <span className="text-[13px] font-bold text-[#4E5968] ml-1">건 / 근무일</span>
+            </div>
+            <div className="text-[11px] font-semibold text-[#4E5968] text-right">
+              총 {avgDeliveries.totalDeliveries.toLocaleString()}건
+              <br />
+              근무일 {avgDeliveries.workedDays}일
             </div>
           </div>
         </Card>
