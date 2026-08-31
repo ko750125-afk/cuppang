@@ -168,7 +168,7 @@ export default function Settlement() {
           </div>
           <div className="flex items-end justify-between">
             <div className="text-[28px] font-extrabold text-[#191F28] tracking-tight">
-              {avgDeliveries.averagePerWorkedDay.toFixed(1)}
+              {Math.round(avgDeliveries.averagePerWorkedDay)}
               <span className="text-[13px] font-bold text-[#4E5968] ml-1">건 / 근무일</span>
             </div>
             <div className="text-[11px] font-semibold text-[#4E5968] text-right">
