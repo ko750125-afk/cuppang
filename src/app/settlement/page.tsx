@@ -185,7 +185,7 @@ export default function Settlement() {
             <div className="flex items-center gap-1.5 bg-white border border-[#E5E8EB] rounded-lg px-1.5 py-0.5 shadow-xs">
               <Button variant="ghost" onClick={() => changeMonth(-1)} className="h-6 w-6 p-0 rounded-md text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">&lt;</Button>
               <span className="text-[11px] font-bold text-[#191F28]">
-                {format(new Date(startDate), 'M/d')} ~ {format(new Date(endDate), 'M/d')}
+                {format(new Date(settlement.startDate), 'M/d')} ~ {format(new Date(settlement.endDate), 'M/d')}
               </span>
               <Button variant="ghost" onClick={() => changeMonth(1)} className="h-6 w-6 p-0 rounded-md text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">&gt;</Button>
             </div>
