@@ -15,24 +15,22 @@ import { AppHeader } from '@/components/layout/AppHeader';
 type CalendarCell = { date: Date; isCurrentMonth: boolean; isWithinPeriod: boolean };
 
 function buildCalendarCells(
-  monthStartStr: string,
-  monthEndStr: string,
   settlementStart: string,
   settlementEnd: string
 ): CalendarCell[] {
   const cells: CalendarCell[] = [];
 
-  const [msy, msm, msd] = monthStartStr.split('-').map(Number);
-  const [mey, mem, med] = monthEndStr.split('-').map(Number);
-  const monthStart = new Date(msy, msm - 1, msd);
-  const monthEnd   = new Date(mey, mem - 1, med);
+  const [msy, msm, msd] = settlementStart.split('-').map(Number);
+  const [mey, mem, med] = settlementEnd.split('-').map(Number);
+  const periodStart = new Date(msy, msm - 1, msd);
+  const periodEnd   = new Date(mey, mem - 1, med);
 
-  // 달력 첫날: 해당 월 1일이 속한 주의 일요일
-  const firstDisplay = new Date(monthStart);
+  // 달력 첫날: 정산 시작일이 속한 주의 일요일
+  const firstDisplay = new Date(periodStart);
   firstDisplay.setDate(firstDisplay.getDate() - firstDisplay.getDay());
 
-  // 달력 마지막날: 해당 월 말일이 속한 주의 토요일
-  const lastDisplay = new Date(monthEnd);
+  // 달력 마지막날: 정산 종료일이 속한 주의 토요일
+  const lastDisplay = new Date(periodEnd);
   lastDisplay.setDate(lastDisplay.getDate() + (6 - lastDisplay.getDay()));
 
   const totalDays = Math.round(
@@ -43,9 +41,7 @@ function buildCalendarCells(
     const date = new Date(firstDisplay.getFullYear(), firstDisplay.getMonth(), firstDisplay.getDate() + i);
     const ds = toDateString(date);
     const isWithinPeriod = ds >= settlementStart && ds <= settlementEnd;
-    // isCurrentMonth: 해당 targetDate의 월에 속하는지 여부
-    const isCurrentMonth = date.getFullYear() === msy && date.getMonth() === msm - 1;
-    cells.push({ date, isCurrentMonth, isWithinPeriod });
+    cells.push({ date, isCurrentMonth: isWithinPeriod, isWithinPeriod });
   }
 
   return cells;
@@ -87,12 +83,8 @@ export default function Settlement() {
 
   const targetYear  = targetDate.getFullYear();
   const targetMonth = targetDate.getMonth(); // 0-based
-  const monthStart  = toDateString(new Date(targetYear, targetMonth, 1));
-  const monthEnd    = toDateString(new Date(targetYear, targetMonth + 1, 0));
 
   const calendarCells = buildCalendarCells(
-    monthStart,
-    monthEnd,
     settlement.startDate,
     settlement.endDate
   );
@@ -152,6 +144,10 @@ export default function Settlement() {
               <span className="text-[#191F28] font-bold">₩{settlement.totalBaseRevenue.toLocaleString()}</span>
             </div>
             <div className="flex justify-between">
+              <span>프레쉬백 회수 ({settlement.totalFreshBags}건 추정)</span>
+              <span className="text-[#191F28] font-bold">₩{settlement.totalFreshBagRevenue.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between">
               <span>수수료 공제 ({settings.commissionRate}%)</span>
               <span className="text-[#F04452] font-bold">- ₩{Math.floor(settlement.totalCommissionDeduction).toLocaleString()}</span>
             </div>
@@ -183,8 +179,8 @@ export default function Settlement() {
         <div className="space-y-3">
           <div className="flex items-center justify-between px-1">
             <h3 className="font-bold text-[16px] text-[#191F28]">
-              월별 배송 내역
-              <span className="text-[13px] font-semibold text-[#4E5968] ml-2">{format(targetDate, 'yyyy년 M월', { locale: ko })}</span>
+              기간별 배송 내역
+              <span className="text-[13px] font-semibold text-[#4E5968] ml-2">정산 기준</span>
             </h3>
             <div className="flex items-center gap-1.5 bg-white border border-[#E5E8EB] rounded-lg px-1.5 py-0.5 shadow-xs">
               <Button variant="ghost" onClick={() => changeMonth(-1)} className="h-6 w-6 p-0 rounded-md text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">&lt;</Button>

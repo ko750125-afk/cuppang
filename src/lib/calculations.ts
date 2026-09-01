@@ -23,17 +23,8 @@ export function calculateDailyRevenue(record: DailyRecord, settings: AppSettings
     if (totalCount > 0) baseRevenue = totalCount * settings.zones[0].price;
   }
 
-  // 일별 프레쉬백 인센티브 (근무일마다 가산되는 고정 금액)
-  const dailyIncentive  = settings.freshBagIncentive ?? 0;
-  const grossRevenue    = baseRevenue + dailyIncentive;
-  const commissionDeduction = grossRevenue * (settings.commissionRate / 100);
-
   return {
     baseRevenue,
-    freshBagRevenue:   dailyIncentive,       // 하위 호환성 유지
-    totalGrossRevenue: grossRevenue,
-    commissionDeduction,
-    finalNetRevenue:   grossRevenue - commissionDeduction,
   };
 }
 
@@ -73,28 +64,33 @@ export function calculateMonthlySettlement(
       const daily         = calculateDailyRevenue(record, settings);
       const deliveryCount = Object.values(record.deliveries).reduce((a, b) => a + b, 0);
       return {
-        baseRevenue:         acc.baseRevenue         + daily.baseRevenue,
-        freshBagRevenue:     acc.freshBagRevenue     + daily.freshBagRevenue,
-        grossRevenue:        acc.grossRevenue        + daily.totalGrossRevenue,
-        commissionDeduction: acc.commissionDeduction + daily.commissionDeduction,
-        netRevenue:          acc.netRevenue          + daily.finalNetRevenue,
-        deliveries:          acc.deliveries          + deliveryCount,
-        freshBags:           acc.freshBags           + (record.freshBagCount || 0),
+        baseRevenue: acc.baseRevenue + daily.baseRevenue,
+        deliveries:  acc.deliveries  + deliveryCount,
       };
     },
-    { baseRevenue: 0, freshBagRevenue: 0, grossRevenue: 0, commissionDeduction: 0, netRevenue: 0, deliveries: 0, freshBags: 0 }
+    { baseRevenue: 0, deliveries: 0 }
   );
+
+  // 프레쉬백 수거량 추정 (전체 배송 건수의 1/4, 내림) 및 금액 계산 (고정 100원)
+  const estimatedFreshBags = Math.floor(totals.deliveries / 4);
+  const totalFreshBagRevenue = estimatedFreshBags * 100;
+
+  const totalGrossRevenue = totals.baseRevenue + totalFreshBagRevenue;
+  
+  // 전체 총액 기준으로 세금 3.3% 계산 후 원단위 절사(내림)
+  const totalCommissionDeduction = Math.floor(totalGrossRevenue * (settings.commissionRate / 100));
+  const totalNetRevenue = totalGrossRevenue - totalCommissionDeduction;
 
   return {
     startDate,
     endDate,
     totalBaseRevenue:         totals.baseRevenue,
-    totalFreshBagRevenue:     totals.freshBagRevenue,
-    totalGrossRevenue:        totals.grossRevenue,
-    totalCommissionDeduction: totals.commissionDeduction,
-    totalNetRevenue:          totals.netRevenue,
+    totalFreshBagRevenue:     totalFreshBagRevenue,
+    totalGrossRevenue:        totalGrossRevenue,
+    totalCommissionDeduction: totalCommissionDeduction,
+    totalNetRevenue:          totalNetRevenue,
     totalDeliveries:          totals.deliveries,
-    totalFreshBags:           totals.freshBags,
+    totalFreshBags:           estimatedFreshBags,
     periodRecords,
   };
 }
