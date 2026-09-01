@@ -184,7 +184,9 @@ export default function Settlement() {
             </h3>
             <div className="flex items-center gap-1.5 bg-white border border-[#E5E8EB] rounded-lg px-1.5 py-0.5 shadow-xs">
               <Button variant="ghost" onClick={() => changeMonth(-1)} className="h-6 w-6 p-0 rounded-md text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">&lt;</Button>
-              <span className="text-[11px] font-bold text-[#191F28]">{format(targetDate, 'yyyy.MM')}</span>
+              <span className="text-[11px] font-bold text-[#191F28]">
+                {format(new Date(startDate), 'M/d')} ~ {format(new Date(endDate), 'M/d')}
+              </span>
               <Button variant="ghost" onClick={() => changeMonth(1)} className="h-6 w-6 p-0 rounded-md text-[#4E5968] hover:text-[#191F28] hover:bg-muted/50">&gt;</Button>
             </div>
           </div>
@@ -209,10 +211,9 @@ export default function Settlement() {
                 return (
                   <div
                     key={index}
-                    onClick={() => cell.isWithinPeriod && setSelectedDate(dateStr)}
+                    onClick={() => setSelectedDate(dateStr)}
                     className={cn(
-                      "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all",
-                      cell.isWithinPeriod ? "cursor-pointer active:scale-95 hover:bg-[#f8f9fa]" : "pointer-events-none",
+                      "relative aspect-square flex flex-col justify-between p-1 bg-white transition-all cursor-pointer active:scale-95 hover:bg-[#f8f9fa]",
                       // 오늘: 파란 ring 강조
                       isToday
                         ? "bg-blue-50/40 hover:bg-blue-50/50 ring-2 ring-[#1850d4] ring-inset z-2"
